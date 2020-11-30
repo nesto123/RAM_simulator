@@ -57,29 +57,47 @@ function obradi_inputn()
 }
 
 function update_numbers(){
-    /*
+    
     var nReg = parseInt( $( 'form[name="program"]').attr("n"));
-    var nIns = parseInt( $( 'div[name="line"]' ).length ) -1;
+    var nIns = parseInt( $( 'div[name="line"]' ).length ) -1;   //      za template - 1
 
     $( 'div[name="line"]' ).each( function(){
+        var selectTarget = $(this).find('select[name="target"]');
+        var selectDestination = $(this).find('select[name="destination"]');
 
-        if( $(this).find('select[name="target"]').length > 0 )
-            $(this).find('select[name="target"]').children('option').each(function(){
-                if( $(this).html().includes("R") && parseInt($(this).attr('value')) > nReg )
-                {
-                    if( $(this).is(':selected') )
-                        $(this).parent().val('-1').change();
-                    $(this).remove();
-                }
-                else if( parseInt($(this).attr('value')) > nIns )
-                    $(this).remove();
+        if( selectTarget.length > 0 )
+        {
+            for(var j = parseInt(selectTarget.children('option').length) - 2; j < nReg; ++j )
+                selectTarget.children('option').last().before( $( '<option>' ).attr('value', j+1).html("R<sub>"+(j+1)+"</sub>"));
+                    
+            selectTarget.children('option').each(function(){
+                    if( parseInt($(this).attr('value')) > nReg )
+                    {
+                        if( $(this).is(':selected') )
+                            $(this).parent().val('-1').change();
+                        $(this).remove();
+                    }
             });
+        }
 
         // drugi sl
+        if( selectDestination.length > 0 )
+        {console.log( selectDestination.children('option').length);
+            for(var j = parseInt(selectDestination.children('option').length)-2; j < nIns; ++j )
+                selectDestination.children('option').last().before( $( '<option>' ).attr('value', j+1).html(j+1));
+                    
+            selectDestination.children('option').each(function(){
+                    if( parseInt($(this).attr('value')) > nIns )
+                    {
+                        if( $(this).is(':selected') )
+                            $(this).parent().val('-1').change();
+                        $(this).remove();
+                    }
+            });
+        }
 
-
-        console.log( $(this).find('select[name="target"]').children('option') , nIns);
-    });*/
+        console.log( selectDestination.children('option') , nIns);
+    });
 }
 
 
@@ -133,6 +151,7 @@ function actionAddRow(e){
     var target = $(e.target);
 
     addLine( parseInt(target.parent().attr('linenumber'))+1);
+    update_numbers();
 }
 
 function actionRemoveRow(e){
@@ -148,14 +167,15 @@ function actionRemoveRow(e){
             $(this).children( 'span[name="lineNumber"]' ).html(parseInt($(this).attr("linenumber")));
         }
     });
+    update_numbers();
 }
 
 function changeIns(evenet){
     var target = $(evenet.target);
     var div = $( '<span>' );
     var option = $( '<option>');
-    var selectTarget = $( '<select>').attr('name', 'target');
-    var selectDest = $( '<select>').attr('name', 'destination');
+    var selectTarget = $( '<select>').attr('name', 'target').attr('required', 'true');
+    var selectDest = $( '<select>').attr('name', 'destination').attr('required', 'true');
 
     var m = $( 'div[name="line"]').length - 1;
 
@@ -163,7 +183,7 @@ function changeIns(evenet){
     
     //makni prijašnje registre
     target.siblings( 'span[name="registers"]' ).remove();
-    console.log(target.siblings( 'div[name="rgisters"]' ));
+    console.log(target.siblings( 'span[name="rgisters"]' ));
     div.attr('name', 'registers' );
     
 
@@ -187,10 +207,10 @@ function changeIns(evenet){
     }
     else if( this.value === "goto"){
         for( var i = 0; i <= m; i+=1 )
-            selectTarget.append( $( '<option>' ).attr('value', i).html("<sub>"+i+"</sub>"));
+            selectDest.append( $( '<option>' ).attr('value', i).html("<sub>"+i+"</sub>"));
 
         selectDest.append( $( '<option>' ).attr('value', '-1').html("--").attr('disabled', 'true'));
-        div.append(selectTarget);
+        div.append(selectDest);
     }
 
     target.after(div);
@@ -210,9 +230,9 @@ function obradi_calculate(event)
 
     for( i = 0;  input[i].name === "x"+(i+1) ; ++i)
         R[i+1] = parseInt(input[i].value);
-    
-    for( i-=  1; i < input.length; ++i )
-    {
+
+    for( i = (i===0) ? 0 : (i - 1) ; i < input.length; ++i )
+    {console.log(input[i].value);
         if( input[i].value === "dec")
         {
             prg.push( {instruction: input[i].value, target: parseInt(input[i+1].value),
@@ -230,6 +250,7 @@ function obradi_calculate(event)
             i+=1;
         }
     }
+
     var startTime, endTime, timeout= false;
     var ispis = {currentIns: 1, nextIns: 1};
     var log = $( 'div[name="log"]' );
@@ -270,6 +291,7 @@ function obradi_calculate(event)
 
         
     }
+
     endTime = new Date();
 if(timeout)
     $( 'div[name="simulation"]' ).html("Timeout!");
