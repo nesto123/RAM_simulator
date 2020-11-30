@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAM</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="ram.js"></script>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+<body>
+    <h1>
+        Unesi RAM program         	
+    </h1>
+    <form action="" name="mjesnost">
+        <p>
+            Unesi mjesnost, tj. broj registara za korištenje R1,...,Rn:
+            <input type="number" name="inputRn" min="0" step="1">
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+    <div name="ram">
+        <form action="" name="program"  style="display: none;">
+            <p name="unesiPrimjer" style="display: none;" >Unesi testni primjer (R1,...,Rn):</p>
+
+            <div name="testInput"></div>
+
+            <p>Unesi program:</p>
+            <div name="line" linenumber=-1 style="display: none;">
+                <button name="newLine">+</button>
+                <button name="removeLine">-</button>
+                <span name="lineNumber">1</span>.
+                <select name="instruction" >
+                    <option disabled selected value>---</option>
+                    <option value="inc">INC</option>
+                    <option value="dec">DEC</option>
+                    <option value="goto">GOTO</option>
+                </select>
+
+                <!--<div name="register"><select name="target">
+                    <option value="0">R_0</option>
+                </select>
+                ,
+                <select name="destination">
+                    <option value="0">R_0</option>
+                </select>-->
+            </div>
+            
+            <br>
+            <button type="submit">Calculate</button>
+            <button name="toggleLog">Toggle log</button>
+
+        </form>
+    </div>
+    <br><hr>
+    <div name="simulation"></div>
+
+    <div name="log" style="display: none;"></div>
+
+</body>
+<footer>
+    <p>© 2020 FV</p>
+</footer>
+</html>
