@@ -10,7 +10,7 @@ $(document).ready(function()
     $( 'form[name="program"]').on( 'submit', obradi_calculate )
                             .on( 'change', update_numbers );
     $( 'button[name="toggleLog"]').on( 'click', function(){
-        $( 'div[name="log"]' ).toggle();
+        $( 'table[name="log"]' ).toggle();
     } );
 
  
@@ -150,8 +150,10 @@ function actionAddRow(e){
     e.preventDefault();
     var target = $(e.target);
 
+console.log(target);
     addLine( parseInt(target.parent().attr('linenumber'))+1);
     update_numbers();
+    
 }
 
 function actionRemoveRow(e){
@@ -253,9 +255,23 @@ function obradi_calculate(event)
 
     var startTime, endTime, timeout= false;
     var ispis = {currentIns: 1, nextIns: 1};
-    var log = $( 'div[name="log"]' );
+
+    //      ispis Log
+    $( 'button[name="toggleLog"]').removeAttr( 'disabled');
+
+    var log = $( 'table[name="log"]' );
+    var thead = $( '<thead>' ).append( $('<th>').html('Instruction') );
+
+    for(var k = 0; k < parseInt($( 'form[name="program"]').attr("n"))+1; ++k )
+        thead.append( $( '<th>').html( "R" + k) );
     log.html('')
-        .append( $('<p>').html('Log:') );
+        .append( thead );
+
+    var tbody = $( '<tbody>');
+    
+    
+    ///////////////////////
+    
     startTime = new Date();
     i=0;
     while( i < prg.length && timeout == false )
@@ -285,12 +301,18 @@ function obradi_calculate(event)
         {
             i = parseInt(prg[i].target);
         }
+/// ispis log
         ispis.nextIns = i;
+        var tr = $( '<tr>' );
 
-        log.append( $('<p>').html(ispis.currentIns+". -> "+ ispis.nextIns +".   R_*:"+R.toString()) );
+        tr.append( $( '<td>' ).html(ispis.currentIns) ) ;
+        for( var l = 0; l < R.length; ++l )
+            tr.append( $( '<td>' ).html( R[l]) );
 
-        
+        tbody.append( tr );        
     }
+
+    log.append(tbody);
 
     endTime = new Date();
 if(timeout)
