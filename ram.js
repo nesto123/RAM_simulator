@@ -13,12 +13,7 @@ $(document).ready(function()
         $( 'table[name="log"]' ).toggle();
     } );
 
- 
-    //$('form[name="program"]').addEventListener('change', function() {
-    //    alert('Hi!');
-    //});
-
-});
+ });
 
 function obradi_inputn()
 {
@@ -43,13 +38,6 @@ function obradi_inputn()
                         .attr('required', 'true')
          );
 
-    // ažuriraj tablicu prvo
-    //    form.update() -- implementirat
-
-    // dodaj red 
-    //var lineTemplate = $( 'div[lineNumber="-1"]');
-    //var newLine = lineTemplate.clone();
-   // newLine.prop("lineNumber", "1");
    if( !(typeof nPrev !== typeof undefined && nPrev !== false) )    //  ako je prvi put
         addLine(0);
     update_numbers();
