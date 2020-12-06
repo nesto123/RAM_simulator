@@ -32,22 +32,33 @@
         <div class="row">
             <div class="col-sm-6">
                 <form action="" name="mjesnost">
-                    <p>
-                        Unesi mjesnost, tj. broj registara za korištenje R1,...,Rn:
-                    </p>
-                    <div class="input-group mb-3">
-                        <input type="number" name="inputRn" min="0" step="1" required class="form-control form-control-sm">
+                    <div class="form-group">
+                        <label for="number">Unesi mjesnost, tj. broj registara za korištenje \(R_1,...,R_n:\)</label>
+
+                        <input type="number" name="inputRn" min="0" step="1" required class="form-control ">
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
+                <hr>
                 <div name="ram">
                     <form action="" name="program"  style="display: none;">
-                        <p name="unesiPrimjer" style="display: none;" >Unesi testni primjer (R1,...,Rn):</p>
+                        <p name="unesiPrimjer" style="display: none;" >Unesi testni primjer \(R_1,...,R_n\):</p>
 
-                        <div name="testInput"></div>
 
+                        <div name="testInput">
+                            <div class="form-group row">
+                                <label for="numb" class="col-sm-2 col-form-label">\(R_1\)</label>
+                                <div class="col-sm-10">
+                                  <input type="email" class="form-control" id="numb" placeholder="Email">
+                                </div>
+                              </div>
+                            
+                        </div>
+                        <hr>
+                        
                         <p>Unesi program:</p>
                         <div name="line" linenumber=-1 style="display: none;">
+                            
                                 <button name="newLine" >+</button>
                                 <button name="removeLine" >-</button>
                             <span name="lineNumber">1</span>.

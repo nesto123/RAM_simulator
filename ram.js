@@ -27,15 +27,29 @@ function obradi_inputn() {
 
     $('div[name="testInput"]').html('');
     for (var i = 1; i <= $('input[name="inputRn"]').val(); i += 1)
-        $('div[name="testInput"]').append(
+    {
+        var d1=    $( '<div>').attr( 'class',"form-group row");
+        var l= $( '<label>').attr('for', 'x'+i).attr('class','col-sm-2 col-form-label').attr('id', 'x'+i).html("\\(R_"+i+"\\):");
+        var d2=    $( '<div>').attr( 'class',"col-sm-10");
+        var input =    $( '<input>').attr( 'type',"number").attr('name', 'x' + i)
+                                    .attr('min', '0')
+                                    .attr('step', '1')
+                                    .attr('value', '0')
+                                    .attr('required', 'true')
+                                    .attr('class', 'form-control');
+        $('div[name="testInput"]').append(d1.append( l).append(d2.append(input)));
+        MathJax.typeset(["#x"+i]);
+                /*$('div[name="testInput"]').append(
             $('<input>').attr('type', 'number')
                 .attr('name', 'x' + i)
                 .attr('min', '0')
                 .attr('step', '1')
                 .attr('value', '0')
                 .attr('required', 'true')
-        );
-
+                .attr('class', 'form-control')
+        );*/
+    }
+        
     if (!(typeof nPrev !== typeof undefined && nPrev !== false))    //  ako je prvi put
         addLine(0);
     update_numbers();
