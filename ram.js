@@ -111,8 +111,8 @@ function addLine(i) {
     newLine.children('span[name="lineNumber"]').html(i);
 
     // dodaj pretplate
-    newLine.children('button[name="newLine"]').on('click', actionAddRow);
-    newLine.children('button[name="removeLine"]').on('click', actionRemoveRow);
+    newLine.find('button[name="newLine"]').on('click', actionAddRow);
+    newLine.find('button[name="removeLine"]').on('click', actionRemoveRow);
     newLine.children('select[name="instruction"]').attr('required', 'true')
         .on('change', changeIns);
 
@@ -126,12 +126,12 @@ function addLine(i) {
     $('div[name="line"]').each(function () {
         if (parseInt($(this).attr("linenumber")) > i) {
             $(this).attr("linenumber", parseInt($(this).attr("linenumber")) + 1);
-            $(this).children('span[name="lineNumber"]').html(parseInt($(this).attr("linenumber")));
+            $(this).find('span[name="lineNumber"]').html(parseInt($(this).attr("linenumber")));
         }
         if (parseInt($(this).attr("linenumber")) === i) {
             if (j === 1) {
                 $(this).attr("linenumber", parseInt($(this).attr("linenumber")) + 1);
-                $(this).children('span[name="lineNumber"]').html(parseInt($(this).attr("linenumber")));
+                $(this).find('span[name="lineNumber"]').html(parseInt($(this).attr("linenumber")));
             }
             j += 1;
         }
@@ -144,7 +144,7 @@ function actionAddRow(e) {
     var target = $(e.target);
 
     console.log(target);
-    addLine(parseInt(target.parent().attr('linenumber')) + 1);
+    addLine(parseInt(target.parents('div[name="line"]').attr('linenumber')) + 1);
     update_numbers();
 
 }
@@ -152,9 +152,9 @@ function actionAddRow(e) {
 function actionRemoveRow(e) {
     e.preventDefault();
     var target = $(e.target);
-    var i = target.parent().attr('linenumber');
+    var i = target.parents('div[name="line"]').attr('linenumber');
 
-    target.parent().remove();
+    target.parents('div[linenumber="'+i+'"]').remove();
     $('div[name="line"]').each(function () {
         if (parseInt($(this).attr("linenumber")) > i) {
             $(this).attr("linenumber", parseInt($(this).attr("linenumber")) - 1);
@@ -168,8 +168,8 @@ function changeIns(evenet) {
     var target = $(evenet.target);
     var div = $('<span>');
     var option = $('<option>');
-    var selectTarget = $('<select>').attr('name', 'target').attr('required', 'true');
-    var selectDest = $('<select>').attr('name', 'destination').attr('required', 'true');
+    var selectTarget = $('<select>').attr('name', 'target').attr('required', 'true').attr('class', 'custom-select col-md-2');
+    var selectDest = $('<select>').attr('name', 'destination').attr('required', 'true').attr('class', 'custom-select col-md-2');
 
     var m = $('div[name="line"]').length - 1;
 
@@ -220,6 +220,8 @@ function obradi_calculate(event) {
     var i;
     var input = $('form[name="program"]').serializeArray();
     var prg = [];
+    var timeoutTime = $( 'input[name="timeout"]').value;
+    $('button').attr('disabled', 'true');
 
     for (i = 0; input[i].name === "x" + (i + 1); ++i)
         R[i + 1] = parseInt(input[i].value);
@@ -266,7 +268,7 @@ function obradi_calculate(event) {
     i = 0;
     while (i < prg.length && timeout == false) {
         endTime = new Date();
-        if (Math.round((endTime - startTime) / 1000) > 3) {
+        if (Math.round((endTime - startTime) / 1000) > timeoutTime) {
             timeout = true;
             break;
         }
@@ -297,18 +299,21 @@ function obradi_calculate(event) {
         tbody.append(tr);
     }
 
-    log.append(tbody);
+    
 
     endTime = new Date();
     if (timeout)
         $('div[name="simulation"]').html("Timeout!");
     else
+    {
         $('div[name="simulation"]').html("Rješenje: " + R[0]);
-
+        log.append(tbody);
+    }
     console.log(input);
     console.log(R);
     console.log(prg);
     console.log(prg.length);
+    $('button').removeAttr('disabled');
 
 
 }

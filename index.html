@@ -24,7 +24,7 @@
 <body>
     <div class="jumbotron text-center" style="margin-bottom:0">
         <h1>
-            Unesi RAM program         	
+            RAM program         	
         </h1>
     </div>
 
@@ -41,6 +41,10 @@
                 </form>
                 <hr>
                 <div name="ram">
+                    <div class="form-group">
+                        <label for="number">Timeout u sekundama:</label>
+                        <input type="number" name="timeout" min="1" max="20" value="2" required class="form-control ">
+                    </div>
                     <form action="" name="program"  style="display: none;">
                         <p name="unesiPrimjer" style="display: none;" >Unesi testni primjer \(R_1,...,R_n\):</p>
 
@@ -54,15 +58,20 @@
                               </div>
                             
                         </div>
+
+
                         <hr>
                         
                         <p>Unesi program:</p>
                         <div name="line" linenumber=-1 style="display: none;">
-                            
-                                <button name="newLine" >+</button>
-                                <button name="removeLine" >-</button>
+                            <div class="btn-group">
+                                <button type="button" name="newLine" class="btn btn-info">+</button>
+                                <button type="button"name="removeLine" class="btn btn-danger">-</button>
+                            </div>
+                                <!--<button name="newLine" >+</button>
+                                <button name="removeLine" >-</button>-->
                             <span name="lineNumber">1</span>.
-                            <select name="instruction" >
+                            <select name="instruction"class="custom-select col-md-2" >
                                 <option disabled selected value>---</option>
                                 <option value="inc">INC</option>
                                 <option value="dec">DEC</option>
