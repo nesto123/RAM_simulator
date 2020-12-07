@@ -11,6 +11,7 @@ $(document).ready(function () {
     $('button[name="toggleLog"]').on('click', function () {
         $('table[name="log"]').toggle();
     });
+    $('button[name="addMakro"]').on('click', addNewMakro);
 
 });
 
@@ -51,17 +52,88 @@ function obradi_inputn() {
     }
         
     if (!(typeof nPrev !== typeof undefined && nPrev !== false))    //  ako je prvi put
-        addLine(0);
+    {
+        addLine(0,"program");
+        // za makro
+        $('div[name="makros"]').attr("totalMakros", "0");
+    }
     update_numbers();
 
 }
 
-function update_numbers() {
+function addNewMakro(){
+    event.preventDefault();
 
+    var divMakros = $('div[name="makros"]');
+    var formMakro = $('<form>').attr('name', 'makro '+parseInt(divMakros.attr('totalMakros')) );
+
+    var lineTemplate = $('form[name="program"]').children('div[linenumber="-1"]').clone();
+
+    // unos naslova
+    var span = $('<span>');
+    span.attr('class', 'badge badge-danger').html('Erase Makro').on('click', removeMakro);
+    formMakro.append( $('<p>').html('Unesi MAKRO '+ parseInt(divMakros.attr('totalMakros') )+' :').append( span)).append(lineTemplate);
+
+    divMakros.append(formMakro);
+    divMakros.attr("totalMakros", parseInt(divMakros.attr("totalMakros"))+1);
+    addLine(0,'makro '+(parseInt(divMakros.attr('totalMakros')) -1));
+
+    var makroNumber = parseInt(divMakros.attr('totalMakros'));
+    update_numbers();
+
+    // dodat makro u instrukcije
+    $('div[name="line"]').each( function(){
+        if( parseInt($(this).attr('linenumber')) != -1 )
+        {
+            var makroCurrent = -1;
+            if( $(this).parents('form').attr('name').split(' ')[0] == 'makro' )
+                makroCurrent = parseInt($(this).parents('form').attr('name').split(' ')[1] );
+            for(var j = 0; j < makroNumber; ++j)
+                if( $(this).find('select[name="instruction"] option[value="makro '+j+'"]').length == 0 && j != makroCurrent )
+                    $(this).find('select[name="instruction"]').append( $('<option>').attr('value', 'makro ' + (j)).html("Makro " + (j) ));
+        }
+    });
+}
+
+function removeMakro(event)
+{
+    // var target = $(event.target);
+    // var removeNumber = parseInt(target.parents( 'form').attr('name').split(' ')[1]);
+
+    // target.parents( 'form').remove();
+    
+    // $('div[name="makros"]').children('form').each(function (){
+    //     if(parseInt($(this).attr('name').split(' ')[1]) > removeNumber )
+    //         $(this).children('p').html( )html('makro '+(parseInt($(this).attr('name').split(' ')[1]) - 1) )
+    //         $(this)..attr('name', 'makro '+(parseInt($(this).attr('name').split(' ')[1]) - 1) );
+    // });
+
+    // $('div[name="line"]').each(function(){
+    //     if( parseInt($(this).attr('linenumber')) != -1 )
+    //     {   
+    //         $(this).children('select[name="instruction"]').children(' option').each(function (){
+    //             console.log('bok',$(this).attr('value') );
+    //             if( $(this).attr('value').split(' ')[0] == 'makro')
+    //             {   
+    //                 if( parseInt($(this).attr('value').split(' ')[1]) == removeNumber )
+    //                     $(this).remove();
+    //                 if( parseInt($(this).attr('value').split(' ')[1]) > removeNumber )
+    //                     $(this).attr('value', parseInt($(this).attr('value')) -1 );
+    //             }
+    //         });
+    //     }
+           
+    // });
+}
+
+
+
+function makeUpdate()
+{
     var nReg = parseInt($('form[name="program"]').attr("n"));
-    var nIns = parseInt($('div[name="line"]').length) - 1;   //      za template - 1
+    var nIns = parseInt($(this).siblings('div[name="line"]').length) ;   //      za template - 1
 
-    $('div[name="line"]').each(function () {
+ 
         var selectTarget = $(this).find('select[name="target"]');
         var selectDestination = $(this).find('select[name="destination"]');
 
@@ -93,15 +165,25 @@ function update_numbers() {
             });
         }
 
-        console.log(selectDestination.children('option'), nIns);
-    });
+        //console.log($(this).parents('div[name="line"]'), nIns);
+
+}
+
+function update_numbers() {
+
+    $('form[name="program"]').children('div[name="line"]').each(makeUpdate);
+    $('div[name="makros"]').children('form').each(
+       function(){  $(this).children('div[name="line"]').each(makeUpdate);}
+    );
+
+    //$('div[name="line"]').each(makeUpdate);
 }
 
 
 // dodaj red i
-function addLine(i) {
+function addLine(i, formName) {
     // dodaj red 
-    var lineTemplate = $('div[linenumber="-1"]');
+    var lineTemplate = $('div[linenumber="-1"]').first();
     var newLine = lineTemplate.clone();
     newLine.show();
 
@@ -118,12 +200,13 @@ function addLine(i) {
 
     // ako dodajemo prije prvog ---     IMPLEMENTIRAT   
     //  if(...)
+    console.log($( 'form[name="'+formName+'"]').find('div[linenumber="' + (i - 1) + '"]'));
 
-    $('div[linenumber="' + (i - 1) + '"]').after(newLine);
+    $( 'form[name="'+formName+'"]').find('div[linenumber="' + (i - 1) + '"]').after(newLine);
 
     // pomakni indexse
     var j = 0;
-    $('div[name="line"]').each(function () {
+    $( 'form[name="'+formName+'"]').find('div[name="line"]').each(function () {
         if (parseInt($(this).attr("linenumber")) > i) {
             $(this).attr("linenumber", parseInt($(this).attr("linenumber")) + 1);
             $(this).find('span[name="lineNumber"]').html(parseInt($(this).attr("linenumber")));
@@ -137,15 +220,28 @@ function addLine(i) {
         }
     });
 
+    // dodat makro u instrukcije
+    $('div[name="line"]').each( function(){
+        if( parseInt($(this).attr('linenumber')) != -1 )
+        {
+            var makroCurrent = -1;
+            if( $(this).parents('form').attr('name').split(' ')[0] == 'makro' )
+                makroCurrent = parseInt($(this).parents('form').attr('name').split(' ')[1] );
+            for(var j = 0; j < parseInt($('div[name="makros"]').attr('totalMakros')); ++j)
+                if( $(this).find('select[name="instruction"] option[value="makro '+j+'"]').length == 0 && j != makroCurrent )
+                    $(this).find('select[name="instruction"]').append( $('<option>').attr('value', 'makro ' + (j)).html("Makro " + (j) ));
+        }
+    });
 }
 
 function actionAddRow(e) {
     e.preventDefault();
     var target = $(e.target);
 
-    console.log(target);
-    addLine(parseInt(target.parents('div[name="line"]').attr('linenumber')) + 1);
+    console.log(target.parents('form').attr('name'));
+    addLine(parseInt(target.parents('div[name="line"]').attr('linenumber')) + 1, target.parents('form').attr('name'));
     update_numbers();
+    console.log(target.parents('div[name="line"]').attr('linenumber'));
 
 }
 
@@ -153,9 +249,10 @@ function actionRemoveRow(e) {
     e.preventDefault();
     var target = $(e.target);
     var i = target.parents('div[name="line"]').attr('linenumber');
+    var templateLine = target.parents('div[name="line"]').siblings('div[lineNumber="-1"]');
 
     target.parents('div[linenumber="'+i+'"]').remove();
-    $('div[name="line"]').each(function () {
+    templateLine.siblings().each(function () {
         if (parseInt($(this).attr("linenumber")) > i) {
             $(this).attr("linenumber", parseInt($(this).attr("linenumber")) - 1);
             $(this).children('span[name="lineNumber"]').html(parseInt($(this).attr("linenumber")));
@@ -168,10 +265,10 @@ function changeIns(evenet) {
     var target = $(evenet.target);
     var div = $('<span>');
     var option = $('<option>');
-    var selectTarget = $('<select>').attr('name', 'target').attr('required', 'true').attr('class', 'custom-select col-md-2');
+    var selectTarget = $('<select>').attr('name', 'target').attr('required', 'true').attr('class', 'custom-select col-md-3');
     var selectDest = $('<select>').attr('name', 'destination').attr('required', 'true').attr('class', 'custom-select col-md-2');
 
-    var m = $('div[name="line"]').length - 1;
+    var m = target.parents('div[name="line"]').siblings('div[name="line"]').length  ;
 
     var n = parseInt($('form[name="program"]').attr("n"));
 
@@ -199,20 +296,51 @@ function changeIns(evenet) {
         div.append(selectTarget)
             .append(selectDest);
     }
-    else if (this.value === "goto") {
-        for (var i = 0; i <= m; i += 1)
+    else if (this.value === "goto") {//////////////////////problem
+        for (var i = 0; i <= m; i += 1){
             selectDest.append($('<option>').attr('value', i).html("<sub>" + i + "</sub>"));
+        console.log(i);}
 
         selectDest.append($('<option>').attr('value', '-1').html("--").attr('disabled', 'true'));
+        console.log('boooook', selectDest);
+
         div.append(selectDest);
     }
 
     target.after(div);
-
+    console.log(target.parents('div[name="line"]'),m);
 
     console.log($('form[name="program"]').attr("n"));
 }
 
+function spljosti(duljina, makroName){
+    var input = $('form[name="'+makroName+'"]').serializeArray();
+    var prg = [];
+
+    for (i = 0 ; i < input.length; ++i) {
+        console.log(input[i].value);
+        if (input[i].value === "dec") {
+            prg.push({
+                instruction: input[i].value, target: parseInt(input[i + 1].value),
+                destination: parseInt(input[i + 2].value) + duljina
+            });
+            i += 2;
+        }
+        else if (input[i].value === "inc") {
+            prg.push({ instruction: input[i].value, target: parseInt(input[i + 1].value)  });
+            i += 1;
+        }
+        else if (input[i].value === "goto") {
+            prg.push({ instruction: input[i].value, target: parseInt(input[i + 1].value) + duljina });
+            i += 1;
+        }
+        else if (input[i].value.split(' ')[0] === "makro") {
+            Array.prototype.push.apply(prg, spljosti(prg.length  + duljina , input[i].value) );
+            i += 1;
+        }
+    }
+    return prg;
+}
 
 function obradi_calculate(event) {
     event.preventDefault();
@@ -220,14 +348,14 @@ function obradi_calculate(event) {
     var i;
     var input = $('form[name="program"]').serializeArray();
     var prg = [];
-    var timeoutTime = $( 'input[name="timeout"]').value;
+    var timeoutTime = parseInt($( 'input[name="timeout"]').value);
     $('button').attr('disabled', 'true');
 
     for (i = 0; input[i].name === "x" + (i + 1); ++i)
         R[i + 1] = parseInt(input[i].value);
 
-    for (i = (i === 0) ? 0 : (i - 1); i < input.length; ++i) {
-        console.log(input[i].value);
+    for ( /*i = (i === 0) ? 0 : (i - 1)*/; i < input.length; ++i) {
+        console.log(input[i]);
         if (input[i].value === "dec") {
             prg.push({
                 instruction: input[i].value, target: parseInt(input[i + 1].value),
@@ -243,6 +371,23 @@ function obradi_calculate(event) {
             prg.push({ instruction: input[i].value, target: parseInt(input[i + 1].value) });
             i += 1;
         }
+        else if (input[i].value.split(' ')[0] === "makro") {
+            Array.prototype.push.apply(prg, spljosti(prg.length, input[i].value));
+        }
+    }
+
+console.log("input=",input);console.log("prg=",prg);
+    //print spljostenje
+    var spljosteno = $( 'div[name="spljosteno"]').html('');
+    var s='';
+    for( var j = 0; j < prg.length;j+=1)
+    {   
+        s= (j + '. ') + prg[j].instruction; console.log(s,prg[j].instruction);
+        if (prg[j].instruction === "dec") 
+            s+= prg[j].target + ', ' + prg[j].destination;
+        else if (prg[j].instruction === "inc" || prg[j].instruction === "goto") 
+            s += prg[j].target;
+        spljosteno.append( $('<p>').html(s));
     }
 
     var startTime, endTime, timeout = false;

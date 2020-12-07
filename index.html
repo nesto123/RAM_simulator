@@ -45,6 +45,8 @@
                         <label for="number">Timeout u sekundama:</label>
                         <input type="number" name="timeout" min="1" max="20" value="2" required class="form-control ">
                     </div>
+
+
                     <form action="" name="program"  style="display: none;">
                         <p name="unesiPrimjer" style="display: none;" >Unesi testni primjer \(R_1,...,R_n\):</p>
 
@@ -65,13 +67,13 @@
                         <p>Unesi program:</p>
                         <div name="line" linenumber=-1 style="display: none;">
                             <div class="btn-group">
-                                <button type="button" name="newLine" class="btn btn-info">+</button>
-                                <button type="button"name="removeLine" class="btn btn-danger">-</button>
+                                <button type="button" name="newLine" class="btn btn-info btn-sm">+</button>
+                                <button type="button"name="removeLine" class="btn btn-danger btn-sm">-</button>
                             </div>
                                 <!--<button name="newLine" >+</button>
                                 <button name="removeLine" >-</button>-->
                             <span name="lineNumber">1</span>.
-                            <select name="instruction"class="custom-select col-md-2" >
+                            <select name="instruction"class="custom-select col-md-4" >
                                 <option disabled selected value>---</option>
                                 <option value="inc">INC</option>
                                 <option value="dec">DEC</option>
@@ -90,14 +92,31 @@
                         <br>
                         <button type="submit" class="btn btn-primary">Calculate</button>
                         <button type="button" name="toggleLog" class="btn btn-warning" disabled>Log</button>
+                        <button type="button" name="addMakro" class="btn btn-success">Add MAKRO</button>
 
                     </form>
+                    <br>
                 </div>
+            </div>
+            <div name="makros" class="col-sm-6">
+                
+                
+                <br>
+
+            </form>
             </div>
         </div>
         
 
         <br><hr>
+        <div class="container" style="margin-top:30px">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div name="spljosteno"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
         <div class="container" style="margin-top:30px">
             <div class="row">
                 <div class="col-sm-12">
