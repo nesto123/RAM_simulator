@@ -40,15 +40,6 @@ function obradi_inputn() {
                                     .attr('class', 'form-control');
         $('div[name="testInput"]').append(d1.append( l).append(d2.append(input)));
         MathJax.typeset(["#x"+i]);
-                /*$('div[name="testInput"]').append(
-            $('<input>').attr('type', 'number')
-                .attr('name', 'x' + i)
-                .attr('min', '0')
-                .attr('step', '1')
-                .attr('value', '0')
-                .attr('required', 'true')
-                .attr('class', 'form-control')
-        );*/
     }
         
     if (!(typeof nPrev !== typeof undefined && nPrev !== false))    //  ako je prvi put
@@ -97,36 +88,8 @@ function addNewMakro(){
 
 function removeMakro(event)
 {
-    // var target = $(event.target);
-    // var removeNumber = parseInt(target.parents( 'form').attr('name').split(' ')[1]);
-
-    // target.parents( 'form').remove();
-    
-    // $('div[name="makros"]').children('form').each(function (){
-    //     if(parseInt($(this).attr('name').split(' ')[1]) > removeNumber )
-    //         $(this).children('p').html( )html('makro '+(parseInt($(this).attr('name').split(' ')[1]) - 1) )
-    //         $(this)..attr('name', 'makro '+(parseInt($(this).attr('name').split(' ')[1]) - 1) );
-    // });
-
-    // $('div[name="line"]').each(function(){
-    //     if( parseInt($(this).attr('linenumber')) != -1 )
-    //     {   
-    //         $(this).children('select[name="instruction"]').children(' option').each(function (){
-    //             console.log('bok',$(this).attr('value') );
-    //             if( $(this).attr('value').split(' ')[0] == 'makro')
-    //             {   
-    //                 if( parseInt($(this).attr('value').split(' ')[1]) == removeNumber )
-    //                     $(this).remove();
-    //                 if( parseInt($(this).attr('value').split(' ')[1]) > removeNumber )
-    //                     $(this).attr('value', parseInt($(this).attr('value')) -1 );
-    //             }
-    //         });
-    //     }
-           
-    // });
+  
 }
-
-
 
 function makeUpdate()
 {
@@ -152,7 +115,6 @@ function makeUpdate()
 
         // drugi sl
         if (selectDestination.length > 0) {
-            console.log(selectDestination.children('option').length);
             for (var j = parseInt(selectDestination.children('option').length) - 2; j < nIns; ++j)
                 selectDestination.children('option').last().before($('<option>').attr('value', j + 1).html(j + 1));
 
@@ -164,9 +126,6 @@ function makeUpdate()
                 }
             });
         }
-
-        //console.log($(this).parents('div[name="line"]'), nIns);
-
 }
 
 function update_numbers() {
@@ -175,8 +134,6 @@ function update_numbers() {
     $('div[name="makros"]').children('form').each(
        function(){  $(this).children('div[name="line"]').each(makeUpdate);}
     );
-
-    //$('div[name="line"]').each(makeUpdate);
 }
 
 
@@ -200,7 +157,6 @@ function addLine(i, formName) {
 
     // ako dodajemo prije prvog ---     IMPLEMENTIRAT   
     //  if(...)
-    console.log($( 'form[name="'+formName+'"]').find('div[linenumber="' + (i - 1) + '"]'));
 
     $( 'form[name="'+formName+'"]').find('div[linenumber="' + (i - 1) + '"]').after(newLine);
 
@@ -238,10 +194,8 @@ function actionAddRow(e) {
     e.preventDefault();
     var target = $(e.target);
 
-    console.log(target.parents('form').attr('name'));
     addLine(parseInt(target.parents('div[name="line"]').attr('linenumber')) + 1, target.parents('form').attr('name'));
     update_numbers();
-    console.log(target.parents('div[name="line"]').attr('linenumber'));
 
 }
 
@@ -274,7 +228,6 @@ function changeIns(evenet) {
 
     //makni prijašnje registre
     target.siblings('span[name="registers"]').remove();
-    console.log(target.siblings('span[name="rgisters"]'));
     div.attr('name', 'registers');
 
 
@@ -296,21 +249,17 @@ function changeIns(evenet) {
         div.append(selectTarget)
             .append(selectDest);
     }
-    else if (this.value === "goto") {//////////////////////problem
+    else if (this.value === "goto") {
         for (var i = 0; i <= m; i += 1){
             selectDest.append($('<option>').attr('value', i).html("<sub>" + i + "</sub>"));
-        console.log(i);}
+        }
 
         selectDest.append($('<option>').attr('value', '-1').html("--").attr('disabled', 'true'));
-        console.log('boooook', selectDest);
 
         div.append(selectDest);
     }
 
     target.after(div);
-    console.log(target.parents('div[name="line"]'),m);
-
-    console.log($('form[name="program"]').attr("n"));
 }
 
 function spljosti(duljina, makroName){
@@ -318,7 +267,6 @@ function spljosti(duljina, makroName){
     var prg = [];
 
     for (i = 0 ; i < input.length; ++i) {
-        console.log(input[i].value);
         if (input[i].value === "dec") {
             prg.push({
                 instruction: input[i].value, target: parseInt(input[i + 1].value),
@@ -350,12 +298,10 @@ function obradi_calculate(event) {
     var prg = [];
     var timeoutTime = parseInt($( 'input[name="timeout"]').val());
     $('button').attr('disabled', 'true');
-    console.log(timeoutTime);
     for (i = 0; input[i].name === "x" + (i + 1); ++i)
         R[i + 1] = parseInt(input[i].value);
 
     for ( /*i = (i === 0) ? 0 : (i - 1)*/; i < input.length; ++i) {
-        console.log(input[i]);
         if (input[i].value === "dec") {
             prg.push({
                 instruction: input[i].value, target: parseInt(input[i + 1].value),
@@ -376,13 +322,12 @@ function obradi_calculate(event) {
         }
     }
 
-console.log("input=",input);console.log("prg=",prg);
     //print spljostenje
     var spljosteno = $( 'div[name="spljosteno"]').html('');
     var s='';
     for( var j = 0; j < prg.length;j+=1)
     {   
-        s= (j + '. ') + prg[j].instruction; console.log(s,prg[j].instruction);
+        s= (j + '. ') + prg[j].instruction; 
         if (prg[j].instruction === "dec") 
             s+= prg[j].target + ', ' + prg[j].destination;
         else if (prg[j].instruction === "inc" || prg[j].instruction === "goto") 
@@ -442,9 +387,7 @@ console.log("input=",input);console.log("prg=",prg);
             tr.append($('<td>').html(R[l]));
 
         tbody.append(tr);
-    }
-
-    
+    }  
 
     endTime = new Date();
     if (timeout)
@@ -454,12 +397,7 @@ console.log("input=",input);console.log("prg=",prg);
         $('div[name="simulation"]').html("Rješenje: " + R[0]);
         log.append(tbody);
     }
-    console.log(input);
-    console.log(R);
-    console.log(prg);
-    console.log(prg.length);
+
     $('button').removeAttr('disabled');
-
-
 }
 
