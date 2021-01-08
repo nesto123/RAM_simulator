@@ -348,9 +348,9 @@ function obradi_calculate(event) {
     var i;
     var input = $('form[name="program"]').serializeArray();
     var prg = [];
-    var timeoutTime = parseInt($( 'input[name="timeout"]').value);
+    var timeoutTime = parseInt($( 'input[name="timeout"]').val());
     $('button').attr('disabled', 'true');
-
+    console.log(timeoutTime);
     for (i = 0; input[i].name === "x" + (i + 1); ++i)
         R[i + 1] = parseInt(input[i].value);
 
